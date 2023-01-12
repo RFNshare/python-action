@@ -1,10 +1,13 @@
 import requests
-
-headers = {'headers': {'X-API-KEY': '91e11016-b53f-4fc0-b715-c5c97b63377f'}}
+import os
+api_key = os.environ.get("X_API_KEY")
+webhook = os.environ.get("WEBHOOK")
+if not api_key or webhook:
+    raise RuntimeError("X-API-KEY or Webhook is Not set")
+headers = {'headers': {'X-API-KEY': api_key}}
 project = "PROJ-17"
 team = 2
 host = "https://qa.isara.com"
-webhook = "5CEc1C32a03E6cF6Eba64Af2ce18734Ccfa3C0EE9ba83DBebCa1DDDF15DCb7382032575a3cB06fca419bCe4D6EB4D3a74BEc"
 
 
 def GetAvailableMachine():
