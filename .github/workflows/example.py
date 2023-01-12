@@ -2,7 +2,7 @@ import requests
 import os
 api_key = os.environ.get("X_API_KEY")
 webhook = os.environ.get("WEBHOOK")
-if not api_key or webhook:
+if not api_key and webhook:
     raise RuntimeError("X-API-KEY or Webhook is Not set")
 headers = {'headers': {'X-API-KEY': api_key}}
 project = "PROJ-17"
