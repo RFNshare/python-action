@@ -45,7 +45,7 @@ if __name__ == '__main__':
         if code == 200:
             assert RunBuild() == 200
         else:
-            print("Build Failed")
+            raise RuntimeError("Build Failed")
     else:
-        print("Machine Not Available")
+        raise RuntimeError("Machine Not Available")
 
