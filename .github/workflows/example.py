@@ -17,7 +17,7 @@ def GetAvailableMachine():
 
 def UploadAndReplace():
     res = requests.post(f"{host}/test_case_file_upload/",
-                        files={"file": open("../bcd.txt", 'rb')},
+                        files={"file": open(".github/bcd.txt", 'rb')},
                         data={"file_upload_tc": "TEST-2148"},
                         verify=False, **headers)
     return res.status_code
