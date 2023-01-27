@@ -27,7 +27,7 @@ jobs:
           zeuz_project_id: PROJ-17
           node_id: faroque_backup
 
-      - name: Step 2 - Uploading Build Artifact in ZeuZ
+#      - name: Step 2 - Uploading Build Artifact in ZeuZ
         run: echo "Hello World" >> test.txt
 
       - uses: sazid/zeuz-actions-upload-attachment@v1.0
