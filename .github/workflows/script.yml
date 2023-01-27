@@ -17,13 +17,27 @@ jobs:
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - name: Checking Machine
+
+      - name: Step 1 - Checking Machine Availability
       - uses: sazid/zeuz-actions-check-node-availability@v1.1
         with:
           zeuz_server_host: ${{ secrets.ZEUZ_SERVER_HOST }}
-          zeuz_api_key: ${{ secrets.X_API_KEY }}
+          zeuz_api_key: ${{ secrets.ZEUZ_API_KEY }}
           zeuz_team_id: 2
           zeuz_project_id: PROJ-17
           node_id: faroque_backup
+
+      - name: step 2 - Checkout the main GitHub branch
+        uses: actions/checkout@v2
+
+      - name: Step 3 - Set up JDK 1.8
+        uses: actions/setup-java@v1
+        with:
+          java-version: 1.8
+
+      - name: Step 4 - Build your your Jakarta web app with Maven
+        run: echo mvn -B package --file pom.xml
+
+      - name: Step 5 - List Ubuntu Environment Variables
+        run: env
 
