@@ -17,9 +17,11 @@ jobs:
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-#      - name: Step 1 - Checking Machine is Available
+      - name: Creating a dummy file
+        run: echo "Hello World" >> test.txt
 
-      - uses: sazid/zeuz-actions-check-node-availability@v1.1
+      - name: Step 1 - Checking Machine is Available
+        uses: sazid/zeuz-actions-check-node-availability@v1.1
         with:
           zeuz_server_host: ${{ secrets.ZEUZ_SERVER_HOST }}
           zeuz_api_key: ${{ secrets.X_API_KEY }}
@@ -27,10 +29,8 @@ jobs:
           zeuz_project_id: PROJ-17
           node_id: faroque_backup
 
-      - name: Step 2 - Uploading Build Artifact in ZeuZ
-        run: echo "Hello World" >> test.txt
-
-      - uses: sazid/zeuz-actions-upload-attachment@v1.0
+      - name: Step 2 - Upload & Replace Build Artifact
+        uses: sazid/zeuz-actions-upload-attachment@v1.0
         with:
           zeuz_server_host: ${{ secrets.ZEUZ_SERVER_HOST }}
           zeuz_api_key: ${{ secrets.X_API_KEY }}
@@ -38,10 +38,3 @@ jobs:
           zeuz_attachment_item_id: ${{ vars.ZEUZ_ATTACHMENT_ITEM_ID }}
           zeuz_attachment_path: test.txt
           zeuz_attachment_replace: true
-
-      # Runs a single command using the runners shell
-#      - name: test-machine-available
-#        env:
-#          X_API_KEY: ${{ secrets.X_API_KEY }}
-#          WEBHOOK: ${{ secrets.WEBHOOK }}
-#        run: python .github/workflows/example.py
