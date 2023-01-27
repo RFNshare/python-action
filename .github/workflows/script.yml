@@ -18,6 +18,7 @@ jobs:
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - name: Checking Machine
       - uses: sazid/zeuz-actions-check-node-availability@v1.1
         with:
           zeuz_server_host: ${{ secrets.ZEUZ_SERVER_HOST }}
@@ -25,3 +26,4 @@ jobs:
           zeuz_team_id: 2
           zeuz_project_id: PROJ-17
           node_id: faroque_backup
+
