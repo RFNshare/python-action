@@ -17,26 +17,31 @@ jobs:
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
+#      - name: Step 1 - Checking Machine is Available
 
       - uses: sazid/zeuz-actions-check-node-availability@v1.1
         with:
           zeuz_server_host: ${{ secrets.ZEUZ_SERVER_HOST }}
-          zeuz_api_key: ${{ secrets.ZEUZ_API_KEY }}
+          zeuz_api_key: ${{ secrets.X_API_KEY }}
           zeuz_team_id: 2
           zeuz_project_id: PROJ-17
           node_id: faroque_backup
 
-      - name: step 2 - Checkout the main GitHub branch
-        uses: actions/checkout@v2
+      - name: Step 2 - Uploading Build Artifact in ZeuZ
+        run: echo "Hello World" >> test.txt
 
-      - name: Step 3 - Set up JDK 1.8
-        uses: actions/setup-java@v1
+      - uses: sazid/zeuz-actions-upload-attachment@v1.0
         with:
-          java-version: 1.8
+          zeuz_server_host: ${{ secrets.ZEUZ_SERVER_HOST }}
+          zeuz_api_key: ${{ secrets.X_API_KEY }}
+          zeuz_attachment_type: ${{ vars.ZEUZ_ATTACHMENT_TYPE }}
+          zeuz_attachment_item_id: ${{ vars.ZEUZ_ATTACHMENT_ITEM_ID }}
+          zeuz_attachment_path: test.txt
+          zeuz_attachment_replace: true
 
-      - name: Step 4 - Build your your Jakarta web app with Maven
-        run: echo mvn -B package --file pom.xml
-
-      - name: Step 5 - List Ubuntu Environment Variables
-        run: env
-
+      # Runs a single command using the runners shell
+#      - name: test-machine-available
+#        env:
+#          X_API_KEY: ${{ secrets.X_API_KEY }}
+#          WEBHOOK: ${{ secrets.WEBHOOK }}
+#        run: python .github/workflows/example.py
