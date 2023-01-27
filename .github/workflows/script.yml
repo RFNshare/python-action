@@ -16,8 +16,9 @@ jobs:
     runs-on: ubuntu-latest
 
     # Steps represent a sequence of tasks that will be executed as part of the job
-    steps_one:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+    steps:
+      - name: Step 1 - Checking Machine is Available
+
       - uses: sazid/zeuz-actions-check-node-availability@v1.1
         with:
           zeuz_server_host: ${{ secrets.ZEUZ_SERVER_HOST }}
@@ -25,8 +26,8 @@ jobs:
           zeuz_team_id: 2
           zeuz_project_id: PROJ-17
           node_id: faroque_backup
-    steps_two:
-      - name: test-upload-attachment
+
+      - name: Step 2 - Uploading Build Artifact in ZeuZ
         run: echo "Hello World" >> test.txt
 
       - uses: sazid/zeuz-actions-upload-attachment@v1.0
