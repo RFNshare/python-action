@@ -18,7 +18,6 @@ jobs:
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
 
-      - name: Step 1 - Checking Machine Availability
       - uses: sazid/zeuz-actions-check-node-availability@v1.1
         with:
           zeuz_server_host: ${{ secrets.ZEUZ_SERVER_HOST }}
