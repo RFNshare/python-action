@@ -39,10 +39,10 @@ jobs:
           zeuz_attachment_path: test.txt
           zeuz_attachment_replace: true
 
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v3
       # Runs a single command using the runners shell
       - name: Step 3 - Run Present API
-        # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-        uses: actions/checkout@v3
         env:
           X_API_KEY: ${{ secrets.X_API_KEY }}
           WEBHOOK: ${{ secrets.WEBHOOK }}
