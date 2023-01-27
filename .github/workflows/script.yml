@@ -38,3 +38,10 @@ jobs:
           zeuz_attachment_item_id: ${{ vars.ZEUZ_ATTACHMENT_ITEM_ID }}
           zeuz_attachment_path: test.txt
           zeuz_attachment_replace: true
+
+      # Runs a single command using the runners shell
+      - name: Step 3 - Run Present API
+        env:
+          X_API_KEY: ${{ secrets.X_API_KEY }}
+          WEBHOOK: ${{ secrets.WEBHOOK }}
+        run: python .github/workflows/example.py

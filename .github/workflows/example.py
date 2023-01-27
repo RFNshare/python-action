@@ -38,14 +38,6 @@ def RunBuild():
 
 
 if __name__ == '__main__':
-    code = None
-    check = GetAvailableMachine()
-    if check == 1:
-        code = UploadAndReplace()
-        if code == 200:
-            assert RunBuild() == 200
-        else:
-            raise RuntimeError("Build Failed")
-    else:
-        raise RuntimeError("Machine Not Available")
+    code = RunBuild()
+    assert code == 200
 
