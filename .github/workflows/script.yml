@@ -24,7 +24,7 @@ jobs:
           zeuz_api_key: ${{ secrets.X_API_KEY }}
           zeuz_team_id: 2
           zeuz_project_id: PROJ-17
-          node_id: faroque.*
+          node_id: faroque_backup
 
       # Runs a single command using the runners shell
 #      - name: test-machine-available
