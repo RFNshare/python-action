@@ -18,11 +18,17 @@ jobs:
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v3
+      - uses: sazid/zeuz-actions-check-node-availability@v1.1
+        with:
+          zeuz_server_host: ${{ secrets.ZEUZ_SERVER_HOST }}
+          zeuz_api_key: ${{ secrets.X_API_KEY }}
+          zeuz_team_id: 2
+          zeuz_project_id: PROJ-17
+          node_id: faroque.*
 
       # Runs a single command using the runners shell
-      - name: Run a Python script
-        env:
-          X_API_KEY: ${{ secrets.X_API_KEY }}
-          WEBHOOK: ${{ secrets.WEBHOOK }}
-        run: python .github/workflows/example.py
+#      - name: test-machine-available
+#        env:
+#          X_API_KEY: ${{ secrets.X_API_KEY }}
+#          WEBHOOK: ${{ secrets.WEBHOOK }}
+#        run: python .github/workflows/example.py
