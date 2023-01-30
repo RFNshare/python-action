@@ -39,13 +39,13 @@ jobs:
           zeuz_attachment_path: test.txt
           zeuz_attachment_replace: true
 
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - name: Step 3 - Checks-out in GITHUB WORKSPACE
-        uses: actions/checkout@v3
-
       # Runs a single command using the runners shell
       - name: Step 4 - Run Present API
-        env:
-          X_API_KEY: ${{ secrets.X_API_KEY }}
-          WEBHOOK: ${{ secrets.WEBHOOK }}
-        run: python .github/workflows/example.py
+        uses: sazid/zeuz-actions-deploy-preset@v1.0
+        with:
+          zeuz_preset_webhook: ${{ secrets.ZEUZ_PRESET_WEBHOOK }}
+          zeuz_api_key: ${{ secrets.X_API_KEY }}
+          zeuz_node_id: ${{ vars.ZEUZ_NODE_ID }}
+          zeuz_objective: ${{ vars.ZEUZ_OBJECTIVE }}
+          zeuz_version: ${{ vars.ZEUZ_VERSION }}
+          zeuz_runtime_parameters: ${{ vars.ZEUZ_RUNTIME_PARAMETERS }}
