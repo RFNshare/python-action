@@ -35,6 +35,16 @@ jobs:
       -  name: Printing Node Id
          run: echo ${{ steps.node_id.outputs.node_id }}
 
+
+      - name: Checkout Github workspace
+        uses: actions/checkout@v2
+
+      - name: Archive production artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: release-zips
+          path: package/artifacts.zip
+
       - name: Step 2 - Upload & Replace Build Artifact
         uses: sazid/zeuz-actions-upload-attachment@v1.0
         with:
@@ -42,8 +52,9 @@ jobs:
           zeuz_api_key: ${{ secrets.X_API_KEY }}
           zeuz_attachment_type: ${{ vars.ZEUZ_ATTACHMENT_TYPE }}
           zeuz_attachment_item_id: ${{ vars.ZEUZ_ATTACHMENT_ITEM_ID }}
-          zeuz_attachment_path: .github/workflows/artifacts.zip
+          zeuz_attachment_path: package/artifacts.zip
           zeuz_attachment_replace: true
+
 
       # Runs a single command using the runners shell
       - name: Step 4 - Run Present API
