@@ -32,7 +32,7 @@ jobs:
           zeuz_project_id: PROJ-17
           node_id: faroque_backup
 
-#      - name: Printing Node Id
+#      -  name: Printing Node Id
 #        run: echo ${{ env.node_id }}
 
       - name: Step 2 - Upload & Replace Build Artifact
