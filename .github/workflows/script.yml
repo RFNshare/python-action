@@ -24,7 +24,7 @@ jobs:
 
       - name: Step 1 - Checking Machine is Available
         uses: sazid/zeuz-actions-check-node-availability@v1.1
-        id: node_id_name
+        id: node_id
         with:
           zeuz_server_host: ${{ secrets.ZEUZ_SERVER_HOST }}
           zeuz_api_key: ${{ secrets.X_API_KEY }}
@@ -33,7 +33,7 @@ jobs:
           node_id: faroque_backup
 
       -  name: Printing Node Id
-         run: echo ${{ steps.node_id_name.outputs.node_id }}
+         run: echo ${{ steps.node_id.outputs.node_id }}
 
       - name: Step 2 - Upload & Replace Build Artifact
         uses: sazid/zeuz-actions-upload-attachment@v1.0
@@ -51,7 +51,7 @@ jobs:
         with:
           zeuz_preset_webhook: ${{ secrets.ZEUZ_PRESET_WEBHOOK }}
           zeuz_api_key: ${{ secrets.X_API_KEY }}
-          zeuz_node_id: ${{ steps.node_id_name.outputs.node_id }}
+          zeuz_node_id: ${{ steps.node_id.outputs.node_id }}
           zeuz_objective: ${{ vars.ZEUZ_OBJECTIVE }}
           zeuz_version: ${{ vars.ZEUZ_VERSION }}
           zeuz_runtime_parameters: ${{ vars.ZEUZ_RUNTIME_PARAMETERS }}
