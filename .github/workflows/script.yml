@@ -24,7 +24,7 @@ jobs:
 
       - name: Step 1 - Checking Machine is Available
         uses: sazid/zeuz-actions-check-node-availability@v1.1
-        id: node_id
+        id: node_id_name
         with:
           zeuz_server_host: ${{ secrets.ZEUZ_SERVER_HOST }}
           zeuz_api_key: ${{ secrets.X_API_KEY }}
@@ -51,7 +51,7 @@ jobs:
         with:
           zeuz_preset_webhook: ${{ secrets.ZEUZ_PRESET_WEBHOOK }}
           zeuz_api_key: ${{ secrets.X_API_KEY }}
-          zeuz_node_id: ${{ env.NODE_ID }}
+          zeuz_node_id: ${{ steps.node_id_name.outputs.node_id }}
           zeuz_objective: ${{ vars.ZEUZ_OBJECTIVE }}
           zeuz_version: ${{ vars.ZEUZ_VERSION }}
           zeuz_runtime_parameters: ${{ vars.ZEUZ_RUNTIME_PARAMETERS }}
