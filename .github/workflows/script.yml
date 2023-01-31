@@ -4,7 +4,9 @@ name: Test CI/CD
 
 # Controls when the workflow will run
 on:
-
+  push:
+    branches:
+      - 'main'
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
@@ -30,8 +32,8 @@ jobs:
           zeuz_project_id: PROJ-17
           node_id: faroque_backup
 
-      - name: Printing Node Id
-        run: echo ${{ env.node_id }}
+#      - name: Printing Node Id
+#        run: echo ${{ env.node_id }}
 
       - name: Step 2 - Upload & Replace Build Artifact
         uses: sazid/zeuz-actions-upload-attachment@v1.0
