@@ -15,7 +15,7 @@ jobs:
   # This workflow contains a single job called "build"
   build:
     # The type of runner that the job will run on
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
@@ -42,15 +42,15 @@ jobs:
           zeuz_attachment_path: zip_list.txt
           zeuz_attachment_replace: true
 
-      - name: Checking Machine is Available
-        uses: sazid/zeuz-actions-check-node-availability@v1.1
-        id: node_id
-        with:
-          zeuz_server_host: ${{ secrets.ZEUZ_SERVER_HOST }}
-          zeuz_api_key: ${{ secrets.X_API_KEY }}
-          zeuz_team_id: 2
-          zeuz_project_id: PROJ-17
-          node_id: cicd.*
+#      - name: Checking Machine is Available
+#        uses: sazid/zeuz-actions-check-node-availability@v1.1
+#        id: node_id
+#        with:
+#          zeuz_server_host: ${{ secrets.ZEUZ_SERVER_HOST }}
+#          zeuz_api_key: ${{ secrets.X_API_KEY }}
+#          zeuz_team_id: 2
+#          zeuz_project_id: PROJ-17
+#          node_id: cicd.*
 
 #      - name: Step 2 - Upload & Replace Build Artifact
 #        uses: sazid/zeuz-actions-upload-attachment@v1.0
