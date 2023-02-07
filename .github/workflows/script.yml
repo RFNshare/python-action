@@ -19,22 +19,6 @@ jobs:
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      - name: Creating a dummy file
-        run: echo "Hello World" >> test.txt
-
-      - name: Step 1 - Checking Machine is Available
-        uses: sazid/zeuz-actions-check-node-availability@v1.1
-        id: node_id
-        with:
-          zeuz_server_host: ${{ secrets.ZEUZ_SERVER_HOST }}
-          zeuz_api_key: ${{ secrets.X_API_KEY }}
-          zeuz_team_id: 2
-          zeuz_project_id: PROJ-17
-          node_id: faroque_backup
-
-      -  name: Printing Node Id
-         run: echo ${{ steps.node_id.outputs.node_id }}
-
 
       - name: Checkout Github workspace
         uses: actions/checkout@v2
@@ -43,26 +27,49 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: release-zips
-          path: package/artifacts.zip
+          path: package/release-zips.zip
 
-      - name: Step 2 - Upload & Replace Build Artifact
+      - run: tar -xf package/release-zips.zip
+      - run: dir -n > zip_list.txt
+
+      - name: Upload version number into zeuz
         uses: sazid/zeuz-actions-upload-attachment@v1.0
         with:
           zeuz_server_host: ${{ secrets.ZEUZ_SERVER_HOST }}
           zeuz_api_key: ${{ secrets.X_API_KEY }}
           zeuz_attachment_type: ${{ vars.ZEUZ_ATTACHMENT_TYPE }}
           zeuz_attachment_item_id: ${{ vars.ZEUZ_ATTACHMENT_ITEM_ID }}
-          zeuz_attachment_path: package/artifacts.zip
+          zeuz_attachment_path: zip_list.txt
           zeuz_attachment_replace: true
 
-
-      # Runs a single command using the runners shell
-      - name: Step 4 - Run Present API
-        uses: sazid/zeuz-actions-deploy-preset@v1.0
+      - name: Checking Machine is Available
+        uses: sazid/zeuz-actions-check-node-availability@v1.1
+        id: node_id
         with:
-          zeuz_preset_webhook: ${{ secrets.ZEUZ_PRESET_WEBHOOK }}
+          zeuz_server_host: ${{ secrets.ZEUZ_SERVER_HOST }}
           zeuz_api_key: ${{ secrets.X_API_KEY }}
-          zeuz_node_id: ${{ steps.node_id.outputs.node_id }}
-          zeuz_objective: ${{ vars.ZEUZ_OBJECTIVE }}
-          zeuz_version: ${{ vars.ZEUZ_VERSION }}
-          zeuz_runtime_parameters: ${{ vars.ZEUZ_RUNTIME_PARAMETERS }}
+          zeuz_team_id: 2
+          zeuz_project_id: PROJ-17
+          node_id: cicd.*
+
+#      - name: Step 2 - Upload & Replace Build Artifact
+#        uses: sazid/zeuz-actions-upload-attachment@v1.0
+#        with:
+#          zeuz_server_host: ${{ secrets.ZEUZ_SERVER_HOST }}
+#          zeuz_api_key: ${{ secrets.X_API_KEY }}
+#          zeuz_attachment_type: ${{ vars.ZEUZ_ATTACHMENT_TYPE }}
+#          zeuz_attachment_item_id: ${{ vars.ZEUZ_ATTACHMENT_ITEM_ID }}
+#          zeuz_attachment_path: package/release-zips.zip
+#          zeuz_attachment_replace: true
+#
+#
+#      # Runs a single command using the runners shell
+#      - name: Step 4 - Run Present API
+#        uses: sazid/zeuz-actions-deploy-preset@v1.0
+#        with:
+#          zeuz_preset_webhook: ${{ secrets.ZEUZ_PRESET_WEBHOOK }}
+#          zeuz_api_key: ${{ secrets.X_API_KEY }}
+#          zeuz_node_id: ${{ steps.node_id.outputs.node_id }}
+#          zeuz_objective: ${{ vars.ZEUZ_OBJECTIVE }}
+#          zeuz_version: ${{ vars.ZEUZ_VERSION }}
+#          zeuz_runtime_parameters: ${{ vars.ZEUZ_RUNTIME_PARAMETERS }}
