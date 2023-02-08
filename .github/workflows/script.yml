@@ -27,54 +27,54 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: release-zips
-          path: package/release-zips.zip
+          path: package/**.zip
 
       - name: Collect Version Number
         id: getVersion
-        run: cd package && unzip -l release-zips.zip > zip_list.txt && echo "::set-output name=version::$(egrep -o "([0-9]{1,}\.)+[0-9]{1,}" zip_list.txt | sort -u)"
+        run: cd package && dir -l > zip_list.txt && echo "::set-output name=version::$(egrep -o "([0-9]{1,}\.)+[0-9]{1,}" zip_list.txt | sort -u)"
 
 
       - name: Printing Version
         run: echo ${{ steps.getVersion.outputs.version }}
 
-      - name: Upload version number into zeuz
-        uses: sazid/zeuz-actions-upload-attachment@v1.0
-        with:
-          zeuz_server_host: ${{ secrets.ZEUZ_SERVER_HOST }}
-          zeuz_api_key: ${{ secrets.X_API_KEY }}
-          zeuz_attachment_type: ${{ vars.ZEUZ_ATTACHMENT_TYPE }}
-          zeuz_attachment_item_id: ${{ vars.ZEUZ_ATTACHMENT_ITEM_ID }}
-          zeuz_attachment_path: package/zip_list.txt
-          zeuz_attachment_replace: true
-
-      - name: Checking Machine is Available
-        uses: sazid/zeuz-actions-check-node-availability@v1.1
-        id: node_id
-        with:
-          zeuz_server_host: ${{ secrets.ZEUZ_SERVER_HOST }}
-          zeuz_api_key: ${{ secrets.X_API_KEY }}
-          zeuz_team_id: 2
-          zeuz_project_id: PROJ-17
-          node_id: cicd.*
-
-      - name: Step 2 - Upload & Replace Build Artifact
-        uses: sazid/zeuz-actions-upload-attachment@v1.0
-        with:
-          zeuz_server_host: ${{ secrets.ZEUZ_SERVER_HOST }}
-          zeuz_api_key: ${{ secrets.X_API_KEY }}
-          zeuz_attachment_type: ${{ vars.ZEUZ_ATTACHMENT_TYPE }}
-          zeuz_attachment_item_id: ${{ vars.ZEUZ_ATTACHMENT_ITEM_ID }}
-          zeuz_attachment_path: package/release-zips.zip
-          zeuz_attachment_replace: true
-
-
-      # Runs a single command using the runners shell
-      - name: Step 4 - Run Present API
-        uses: sazid/zeuz-actions-deploy-preset@v1.0
-        with:
-          zeuz_preset_webhook: ${{ secrets.ZEUZ_PRESET_WEBHOOK }}
-          zeuz_api_key: ${{ secrets.X_API_KEY }}
-          zeuz_node_id: ${{ steps.node_id.outputs.node_id }}
-          zeuz_objective: ${{ vars.ZEUZ_OBJECTIVE }}
-          zeuz_version: ${{ steps.getVersion.outputs.version }}
-          zeuz_runtime_parameters: ${{ vars.ZEUZ_RUNTIME_PARAMETERS }}
+#      - name: Upload version number into zeuz
+#        uses: sazid/zeuz-actions-upload-attachment@v1.0
+#        with:
+#          zeuz_server_host: ${{ secrets.ZEUZ_SERVER_HOST }}
+#          zeuz_api_key: ${{ secrets.X_API_KEY }}
+#          zeuz_attachment_type: ${{ vars.ZEUZ_ATTACHMENT_TYPE }}
+#          zeuz_attachment_item_id: ${{ vars.ZEUZ_ATTACHMENT_ITEM_ID }}
+#          zeuz_attachment_path: package/zip_list.txt
+#          zeuz_attachment_replace: true
+#
+#      - name: Checking Machine is Available
+#        uses: sazid/zeuz-actions-check-node-availability@v1.1
+#        id: node_id
+#        with:
+#          zeuz_server_host: ${{ secrets.ZEUZ_SERVER_HOST }}
+#          zeuz_api_key: ${{ secrets.X_API_KEY }}
+#          zeuz_team_id: 2
+#          zeuz_project_id: PROJ-17
+#          node_id: cicd.*
+#
+#      - name: Step 2 - Upload & Replace Build Artifact
+#        uses: sazid/zeuz-actions-upload-attachment@v1.0
+#        with:
+#          zeuz_server_host: ${{ secrets.ZEUZ_SERVER_HOST }}
+#          zeuz_api_key: ${{ secrets.X_API_KEY }}
+#          zeuz_attachment_type: ${{ vars.ZEUZ_ATTACHMENT_TYPE }}
+#          zeuz_attachment_item_id: ${{ vars.ZEUZ_ATTACHMENT_ITEM_ID }}
+#          zeuz_attachment_path: package/release-zips.zip
+#          zeuz_attachment_replace: true
+#
+#
+#      # Runs a single command using the runners shell
+#      - name: Step 4 - Run Present API
+#        uses: sazid/zeuz-actions-deploy-preset@v1.0
+#        with:
+#          zeuz_preset_webhook: ${{ secrets.ZEUZ_PRESET_WEBHOOK }}
+#          zeuz_api_key: ${{ secrets.X_API_KEY }}
+#          zeuz_node_id: ${{ steps.node_id.outputs.node_id }}
+#          zeuz_objective: ${{ vars.ZEUZ_OBJECTIVE }}
+#          zeuz_version: ${{ steps.getVersion.outputs.version }}
+#          zeuz_runtime_parameters: ${{ vars.ZEUZ_RUNTIME_PARAMETERS }}
