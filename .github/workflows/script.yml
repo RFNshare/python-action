@@ -25,7 +25,6 @@ jobs:
 
       - name: Archive production artifacts
         uses: actions/upload-artifact@v3
-        id: upload
         with:
           name: release-zips
           path: package/**.zip
@@ -34,13 +33,9 @@ jobs:
         id: getVersion
         run: cd package && dir -l > zip_list.txt && echo "::set-output name=version::$(egrep -o "([0-9]{1,}\.)+[0-9]{1,}" zip_list.txt | sort -u)"
 
-      - name: 'Echo upload path'
-        run: echo ${{steps.upload.outputs.upload-path}}
+
       - name: Printing Version
         run: echo ${{ steps.getVersion.outputs.version }}
-
-      - name: 'Echo upload path'
-        run: echo ${{steps.download.outputs.download-path}}
 
       - name: Upload version number into zeuz
         uses: sazid/zeuz-actions-upload-attachment@v1.0
@@ -67,22 +62,19 @@ jobs:
         id: download
         with:
           name: release-zips
-          path: package/
 
-      - name: 'Echo download path'
-        run: echo ${{steps.download.outputs.download-path}}
 
-#      - name: Step 2 - Upload & Replace Build Artifact
-#        uses: sazid/zeuz-actions-upload-attachment@v1.0
-#        with:
-#          zeuz_server_host: ${{ secrets.ZEUZ_SERVER_HOST }}
-#          zeuz_api_key: ${{ secrets.X_API_KEY }}
-#          zeuz_attachment_type: ${{ vars.ZEUZ_ATTACHMENT_TYPE }}
-#          zeuz_attachment_item_id: ${{ vars.ZEUZ_ATTACHMENT_ITEM_ID }}
-#          zeuz_attachment_path: package/release-zips
-#          zeuz_attachment_replace: true
-#
-#
+      - name: Step 2 - Upload & Replace Build Artifact
+        uses: sazid/zeuz-actions-upload-attachment@v1.0
+        with:
+          zeuz_server_host: ${{ secrets.ZEUZ_SERVER_HOST }}
+          zeuz_api_key: ${{ secrets.X_API_KEY }}
+          zeuz_attachment_type: ${{ vars.ZEUZ_ATTACHMENT_TYPE }}
+          zeuz_attachment_item_id: ${{ vars.ZEUZ_ATTACHMENT_ITEM_ID }}
+          zeuz_attachment_path: ${{steps.download.outputs.download-path}}
+          zeuz_attachment_replace: true
+
+
 #      # Runs a single command using the runners shell
 #      - name: Step 4 - Run Present API
 #        uses: sazid/zeuz-actions-deploy-preset@v1.0
