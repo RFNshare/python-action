@@ -62,6 +62,7 @@ jobs:
         id: download
         with:
           name: release-zips
+          path: package/
 
 
       - name: Step 2 - Upload & Replace Build Artifact
