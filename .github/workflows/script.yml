@@ -30,8 +30,8 @@ jobs:
           path: package/release-zips.zip
 
 #      - run: gzip -d package/release-zips.zip
-      - run: cd package && dir -n > zip_list.txt
-
+      - run: cd package
+      - run: dir -n > zip_list.txt
       - name: Upload version number into zeuz
         uses: sazid/zeuz-actions-upload-attachment@v1.0
         with:
