@@ -57,6 +57,11 @@ jobs:
           zeuz_project_id: PROJ-17
           node_id: cicd.*
 
+      - name: Download Zip
+        uses: actions/download-artifact@v3
+        with:
+          name: release-zips
+
       - name: Step 2 - Upload & Replace Build Artifact
         uses: sazid/zeuz-actions-upload-attachment@v1.0
         with:
