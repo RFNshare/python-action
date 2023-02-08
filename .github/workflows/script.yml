@@ -30,12 +30,10 @@ jobs:
           path: package/release-zips.zip
 
       - name: Collect Version Number
-        run: cd package && unzip -l release-zips.zip > zip_list.txt
-
-      - name: get version number
         id: getVersion
-        run: |
-            echo "::set-output name=version::$(egrep -o "([0-9]{1,}\.)+[0-9]{1,}" zip_list.txt | sort -u)"
+        run: cd package && unzip -l release-zips.zip > zip_list.txt && echo "::set-output name=version::$(egrep -o "([0-9]{1,}\.)+[0-9]{1,}" zip_list.txt | sort -u)"
+
+
       - name: check the value
         run: |
             echo ${${{ steps.getVersion.outputs.version }}} # this will show 'version', is the expected tag.
