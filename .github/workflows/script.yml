@@ -61,16 +61,17 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: release-zips
+          path: package/
 
-      - name: Step 2 - Upload & Replace Build Artifact
-        uses: sazid/zeuz-actions-upload-attachment@v1.0
-        with:
-          zeuz_server_host: ${{ secrets.ZEUZ_SERVER_HOST }}
-          zeuz_api_key: ${{ secrets.X_API_KEY }}
-          zeuz_attachment_type: ${{ vars.ZEUZ_ATTACHMENT_TYPE }}
-          zeuz_attachment_item_id: ${{ vars.ZEUZ_ATTACHMENT_ITEM_ID }}
-          zeuz_attachment_path: package/**.zip
-          zeuz_attachment_replace: true
+#      - name: Step 2 - Upload & Replace Build Artifact
+#        uses: sazid/zeuz-actions-upload-attachment@v1.0
+#        with:
+#          zeuz_server_host: ${{ secrets.ZEUZ_SERVER_HOST }}
+#          zeuz_api_key: ${{ secrets.X_API_KEY }}
+#          zeuz_attachment_type: ${{ vars.ZEUZ_ATTACHMENT_TYPE }}
+#          zeuz_attachment_item_id: ${{ vars.ZEUZ_ATTACHMENT_ITEM_ID }}
+#          zeuz_attachment_path: package/**.zip
+#          zeuz_attachment_replace: true
 #
 #
 #      # Runs a single command using the runners shell
