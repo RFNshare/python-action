@@ -25,6 +25,7 @@ jobs:
 
       - name: Archive production artifacts
         uses: actions/upload-artifact@v3
+        id: upload
         with:
           name: release-zips
           path: package/**.zip
@@ -33,9 +34,13 @@ jobs:
         id: getVersion
         run: cd package && dir -l > zip_list.txt && echo "::set-output name=version::$(egrep -o "([0-9]{1,}\.)+[0-9]{1,}" zip_list.txt | sort -u)"
 
-
+      - name: 'Echo upload path'
+        run: echo ${{steps.upload.outputs.upload-path}}
       - name: Printing Version
         run: echo ${{ steps.getVersion.outputs.version }}
+
+      - name: 'Echo upload path'
+        run: echo ${{steps.download.outputs.download-path}}
 
       - name: Upload version number into zeuz
         uses: sazid/zeuz-actions-upload-attachment@v1.0
