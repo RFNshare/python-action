@@ -31,7 +31,7 @@ jobs:
 
       - name: Collect Version Number
         id: getVersion
-        run: cd package && dir -l > zip_list.txt && echo "::set-output name=version::$(egrep -o "([0-9]{1,}\.)+[0-9]{1,}" zip_list.txt | sort -u)"
+        run: cd package && dir -l > zip_list.txt && echo "::set-output name=version::$(egrep -o "([0-9]{1,}\.)+[0-9]{1,}" zip_list.txt | sort -u)" && zip -r release-zips.zip *.zip
 
 
       - name: Printing Version
@@ -57,13 +57,6 @@ jobs:
           zeuz_project_id: PROJ-17
           node_id: cicd.*
 
-      - name: Download Zip
-        uses: actions/download-artifact@v3
-        id: download
-        with:
-          name: release-zips
-          path: package/
-
 
       - name: Step 2 - Upload & Replace Build Artifact
         uses: sazid/zeuz-actions-upload-attachment@v1.0
@@ -72,7 +65,7 @@ jobs:
           zeuz_api_key: ${{ secrets.X_API_KEY }}
           zeuz_attachment_type: ${{ vars.ZEUZ_ATTACHMENT_TYPE }}
           zeuz_attachment_item_id: ${{ vars.ZEUZ_ATTACHMENT_ITEM_ID }}
-          zeuz_attachment_path: package/ISARA Advance - ${{ steps.getVersion.outputs.version }}.zip
+          zeuz_attachment_path: package/release-zips.zip
           zeuz_attachment_replace: true
 
 
