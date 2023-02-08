@@ -34,9 +34,8 @@ jobs:
         run: cd package && unzip -l release-zips.zip > zip_list.txt && echo "::set-output name=version::$(egrep -o "([0-9]{1,}\.)+[0-9]{1,}" zip_list.txt | sort -u)"
 
 
-      - name: check the value
-        run: |
-            echo ${${{ steps.getVersion.outputs.version }}} # this will show 'version', is the expected tag.
+      - name: Printing Version
+        run: echo ${{ steps.getVersion.outputs.version }}
 
 #      - name: Upload version number into zeuz
 #        uses: sazid/zeuz-actions-upload-attachment@v1.0
