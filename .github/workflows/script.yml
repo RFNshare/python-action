@@ -35,7 +35,7 @@ jobs:
       - name: get version number
         id: getVersion
         run: |
-            echo "::set-output name=version::$(python -c "exec(\"import re\nwith open('zip_list.txt', 'r') as file:test = file.read().rstrip()\nre.search(r'ISARA Advance -\s*([\d.]+)', test).group(1)")")"
+            echo "::set-output name=version::$(egrep -o "([0-9]{1,}\.)+[0-9]{1,}" zip_list.txt | sort -u)"
       - name: check the value
         run: |
             echo ${${{ steps.getVersion.outputs.version }}} # this will show 'version', is the expected tag.
