@@ -21,17 +21,6 @@
 
      # Steps represent a sequence of tasks that will be executed as part of the job
      steps:
-       # Verify CI/CD node is online
-       - name: Checking Machine is Available
-         uses: sazid/zeuz-actions-check-node-availability@v1.1
-         id: node_id
-         with:
-           zeuz_server_host: ${{ secrets.ZEUZ_SERVER_HOST }}
-           zeuz_api_key: ${{ secrets.X_API_KEY }}
-           zeuz_team_id: 2
-           zeuz_project_id: PROJ-17
-           node_id: ci_cd.*
-
        # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
        - uses: actions/checkout@v2
 
@@ -46,6 +35,24 @@
            name: release-zips
            path: package/**.zip
 
+       - name: Collect Version Number
+         id: getVersion
+         run: cd package && dir -l > zip_list.txt && echo "::set-output name=version::$(egrep -o "([0-9]{1,}\.)+[0-9]{1,}" zip_list.txt | sort -u)" && zip -r release-zips.zip *.zip
+
+
+       - name: Printing Version
+         run: echo ${{ steps.getVersion.outputs.version }} > version.txt
+
+       - name: Upload version number into ZeuZ
+         uses: sazid/zeuz-actions-upload-attachment@v1.0
+         with:
+           zeuz_server_host: ${{ secrets.ZEUZ_SERVER_HOST }}
+           zeuz_api_key: ${{ secrets.X_API_KEY }}
+           zeuz_attachment_type: ${{ vars.ZEUZ_ATTACHMENT_TYPE }}
+           zeuz_attachment_item_id: ${{ vars.ZEUZ_ATTACHMENT_ITEM_ID }}
+           zeuz_attachment_path: version.txt
+           zeuz_attachment_replace: true
+
       # Upload & Replace Artifact into zeuz test case
        - name: Upload & Replace Build Artifact
          uses: sazid/zeuz-actions-upload-attachment@v1.0
@@ -54,8 +61,19 @@
            zeuz_api_key: ${{ secrets.X_API_KEY }}
            zeuz_attachment_type: ${{ vars.ZEUZ_ATTACHMENT_TYPE }}
            zeuz_attachment_item_id: ${{ vars.ZEUZ_ATTACHMENT_ITEM_ID }}
-           zeuz_attachment_path: package/**.zip
+           zeuz_attachment_path: package/release-zips.zip
            zeuz_attachment_replace: true
+
+       # Verify CI/CD node is online
+       - name: Checking Machine is Available
+         uses: sazid/zeuz-actions-check-node-availability@v1.1
+         id: node_id
+         with:
+           zeuz_server_host: ${{ secrets.ZEUZ_SERVER_HOST }}
+           zeuz_api_key: ${{ secrets.X_API_KEY }}
+           zeuz_team_id: 2
+           zeuz_project_id: PROJ-17
+           node_id: cicd.*
 
        # Runs a single set using the Preset API
        - name: Run Present API
@@ -65,5 +83,5 @@
            zeuz_api_key: ${{ secrets.X_API_KEY }}
            zeuz_node_id: ${{ steps.node_id.outputs.node_id }}
            zeuz_objective: ${{ vars.ZEUZ_OBJECTIVE }}
-           zeuz_version: ${{ vars.ZEUZ_VERSION }}
+           zeuz_version: ${{ steps.getVersion.outputs.version }}
            zeuz_runtime_parameters: ${{ vars.ZEUZ_RUNTIME_PARAMETERS }}
