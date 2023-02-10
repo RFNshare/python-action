@@ -31,7 +31,7 @@ jobs:
 
       - name: Collect Version Number
         id: getVersion
-        run: cd package && dir -l > zip_list.txt && echo "::set-output name=version::$(egrep -o "([0-9]{1,}\.)+[0-9]{1,}" zip_list.txt | sort -u)" && zip -r release-zips.zip *.zip
+        run: sudo apt-get install zip && cd package && dir -l > zip_list.txt && echo "::set-output name=version::$(egrep -o "([0-9]{1,}\.)+[0-9]{1,}" zip_list.txt | sort -u)" && zip -r release-zips.zip *.zip
 
 
       - name: Printing Version
@@ -67,13 +67,13 @@ jobs:
           zeuz_project_id: PROJ-17
           node_id: cicd.*
 
-      # Runs a single command using the runners shell
-      - name: Step 4 - Run Present API
-        uses: sazid/zeuz-actions-deploy-preset@v1.0
-        with:
-          zeuz_preset_webhook: ${{ secrets.ZEUZ_PRESET_WEBHOOK }}
-          zeuz_api_key: ${{ secrets.X_API_KEY }}
-          zeuz_node_id: ${{ steps.node_id.outputs.node_id }}
-          zeuz_objective: ${{ vars.ZEUZ_OBJECTIVE }}
-          zeuz_version: ${{ steps.getVersion.outputs.version }}
-          zeuz_runtime_parameters: ${{ vars.ZEUZ_RUNTIME_PARAMETERS }}
+#      # Runs a single command using the runners shell
+#      - name: Step 4 - Run Present API
+#        uses: sazid/zeuz-actions-deploy-preset@v1.0
+#        with:
+#          zeuz_preset_webhook: ${{ secrets.ZEUZ_PRESET_WEBHOOK }}
+#          zeuz_api_key: ${{ secrets.X_API_KEY }}
+#          zeuz_node_id: ${{ steps.node_id.outputs.node_id }}
+#          zeuz_objective: ${{ vars.ZEUZ_OBJECTIVE }}
+#          zeuz_version: ${{ steps.getVersion.outputs.version }}
+#          zeuz_runtime_parameters: ${{ vars.ZEUZ_RUNTIME_PARAMETERS }}
