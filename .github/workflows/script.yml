@@ -76,4 +76,4 @@ jobs:
           zeuz_node_id: ${{ steps.node_id.outputs.node_id }}
           zeuz_objective: Testing
           zeuz_version: ${{ steps.getVersion.outputs.version }}
-          zeuz_runtime_parameters: []
+          zeuz_runtime_parameters: "[]"
