@@ -56,6 +56,18 @@ jobs:
           zeuz_attachment_path: version.txt
           zeuz_attachment_replace: true
 
+      - name: Collecting Details
+        id: vars
+        shell: bash
+        run: |
+            echo "author=$(git log -1 --format='%an')" >>$GITHUB_OUTPUT
+            echo "msg=$(git log -1 --pretty=%B')" >>$GITHUB_OUTPUT
+
+      - name: Output
+        run: |
+          echo "Author: ${{ steps.vars.outputs.author }}"
+          echo "Message: ${{ steps.vars.outputs.msg }}"
+
       - name: Upload & Replace Build Artifact
         uses: sazid/zeuz-actions-upload-attachment@v1.0
         with:
