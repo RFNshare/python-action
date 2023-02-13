@@ -62,7 +62,7 @@ jobs:
         run: |
             echo "author=$(git log -1 --format='%an')" >>$GITHUB_OUTPUT
             echo "message=$(git log -1 --pretty=%B)" >>$GITHUB_OUTPUT
-            echo "obj=$(git log -1 --format='%an' | grep -o '^....'): $(git log -1 --pretty=%B | cut -b 1-15)" >>$GITHUB_OUTPUT
+            echo "obj=$(git log -1 --format='%an' | grep -o '^.....'): $(git log -1 --pretty=%B | cut -b 1-20)" >>$GITHUB_OUTPUT
 
       - name: Output
         run: |
