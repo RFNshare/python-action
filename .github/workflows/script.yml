@@ -68,7 +68,7 @@ jobs:
         run: |
           echo "Author Name: ${{ steps.vars.outputs.author }}"
           echo "Commit Message: ${{ steps.vars.outputs.message }}"
-          echo "Obj: ${{ steps.vars.outputs.obj }}"
+          echo "Obj: ${{ steps.vars.outputs.obj }}" 
 
 #      - name: Upload & Replace Build Artifact
 #        uses: sazid/zeuz-actions-upload-attachment@v1.0
