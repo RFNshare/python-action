@@ -62,11 +62,14 @@ jobs:
         run: |
             echo "author=$(git log -1 --format='%an')" >>$GITHUB_OUTPUT
             echo "message=$(git log -1 --pretty=%B)" >>$GITHUB_OUTPUT
+        env:
+          AUTHOR_NAME: ${{ steps.vars.outputs.author }}
+          MESSAGE: ${{ steps.vars.outputs.message }}
 
       - name: Output
         run: |
-          echo "Author Name: ${{ steps.vars.outputs.author::6 }}"
-          echo "Commit Message: ${{ steps.vars.outputs.message::10 }}"
+          echo "Author Name: ${AUTHOR_NAME::6}"
+          echo "Commit Message: ${MESSAGE::10}"
 
 #      - name: Upload & Replace Build Artifact
 #        uses: sazid/zeuz-actions-upload-attachment@v1.0
