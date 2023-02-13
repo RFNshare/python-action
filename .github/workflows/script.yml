@@ -68,8 +68,8 @@ jobs:
 
       - name: Output
         run: |
-          echo "Author Name: ${AUTHOR_NAME::6}"
-          echo "Commit Message: ${MESSAGE::10}"
+          echo "Author Name: $AUTHOR_NAME"
+          echo "Commit Message: $MESSAGE"
 
 #      - name: Upload & Replace Build Artifact
 #        uses: sazid/zeuz-actions-upload-attachment@v1.0
