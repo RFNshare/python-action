@@ -62,7 +62,7 @@ jobs:
         run: |
             echo "author=$(git log -1 --format='%an' | grep -o '^....')" >>$GITHUB_OUTPUT
             echo "message=$(git log -1 --pretty=%B)" >>$GITHUB_OUTPUT
-            echo "obj=$(git log -1 --format='%an' | grep -o '^....'): $(git log -1 --pretty=%B | cut -b 1-50)" >>$GITHUB_OUTPUT
+            echo "obj=$(git log -1 --format='%an' | grep -o '^....'): $(git log -1 --pretty=%B)" >>$GITHUB_OUTPUT
 
       - name: Output
         run: |
@@ -89,6 +89,6 @@ jobs:
           zeuz_preset_webhook: ${{ secrets.ZEUZ_PRESET_WEBHOOK }}
           zeuz_api_key: ${{ secrets.X_API_KEY }}
           zeuz_node_id: ${{ steps.node_id.outputs.node_id }}
-          zeuz_objective: t
+          zeuz_objective: ${{ steps.vars.outputs.obj }}
           zeuz_version: ${{ steps.getVersion.outputs.version }}
           zeuz_runtime_parameters: ${{ vars.ZEUZ_RUNTIME_PARAMETERS }}
