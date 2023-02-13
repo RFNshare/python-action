@@ -60,12 +60,9 @@ jobs:
         id: vars
         shell: bash
         run: |
-            a = git log -1 --format='%an'
-            b = git log -1 --pretty=%B
-            c = a+':'+b
             echo "author=$(git log -1 --format='%an')" >>$GITHUB_OUTPUT
             echo "message=$(git log -1 --pretty=%B)" >>$GITHUB_OUTPUT
-            echo "obj=$c" >>$GITHUB_OUTPUT
+            echo "obj=$(git log -1 --format='%an'):$(git log -1 --pretty=%B)" >>$GITHUB_OUTPUT
 
       - name: Output
         run: |
