@@ -60,9 +60,9 @@ jobs:
         id: vars
         shell: bash
         run: |
-            echo "author=$(git log -1 --format='%an')" >>${GITHUB_OUTPUT::4}
-            echo "message=$(git log -1 --pretty=%B)" >>${GITHUB_OUTPUT::8}
-            echo "obj=$(git log -1 --format='%an'): $(git log -1 --pretty=%B)" >>$GITHUB_OUTPUT
+            echo "author=$(git log -1 --format='%an' | grep -o '^....')" >>$GITHUB_OUTPUT
+            echo "message=$(git log -1 --pretty=%B)" >>$GITHUB_OUTPUT
+            echo "obj=$(git log -1 --format='%an' | grep -o '^....'): $(git log -1 --pretty=%B | cut -b 1-400)" >>$GITHUB_OUTPUT
 
       - name: Output
         run: |
