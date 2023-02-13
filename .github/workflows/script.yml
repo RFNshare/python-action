@@ -62,7 +62,7 @@ jobs:
         run: |
             echo "author=$(git log -1 --format='%an')" >>$GITHUB_OUTPUT
             echo "message=$(git log -1 --pretty=%B)" >>$GITHUB_OUTPUT
-        env:
+      - env:
           AUTHOR_NAME: ${{ steps.vars.outputs.author }}
           MESSAGE: ${{ steps.vars.outputs.message }}
 
