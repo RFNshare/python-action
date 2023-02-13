@@ -89,6 +89,6 @@ jobs:
           zeuz_preset_webhook: ${{ secrets.ZEUZ_PRESET_WEBHOOK }}
           zeuz_api_key: ${{ secrets.X_API_KEY }}
           zeuz_node_id: ${{ steps.node_id.outputs.node_id }}
-          zeuz_objective: ${{ steps.vars.outputs.obj }}
+          zeuz_objective: t
           zeuz_version: ${{ steps.getVersion.outputs.version }}
           zeuz_runtime_parameters: ${{ vars.ZEUZ_RUNTIME_PARAMETERS }}
