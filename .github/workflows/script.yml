@@ -60,7 +60,7 @@ jobs:
         id: vars
         shell: bash
         run: |
-            echo "author=$(git log -1 --format='%an' | grep -o '^....')" >>$GITHUB_OUTPUT
+            echo "author=$(git log -1 --format='%an')" >>$GITHUB_OUTPUT
             echo "message=$(git log -1 --pretty=%B)" >>$GITHUB_OUTPUT
             echo "obj=$(git log -1 --format='%an'): $(git log -1 --pretty=%B)" >>$GITHUB_OUTPUT
 
@@ -68,7 +68,7 @@ jobs:
         run: |
           echo "Author Name: ${{ steps.vars.outputs.author }}"
           echo "Commit Message: ${{ steps.vars.outputs.message }}"
-          echo "Obj: ${{ steps.vars.outputs.obj }}" 
+          echo "Obj: ${{ steps.vars.outputs.obj }}"
 
       - name: Upload & Replace Build Artifact
         uses: sazid/zeuz-actions-upload-attachment@v1.0
@@ -79,7 +79,6 @@ jobs:
           zeuz_attachment_item_id: ${{ vars.ZEUZ_ATTACHMENT_ITEM_ID }}
           zeuz_attachment_path: package/release-zips.tar.gz
           zeuz_attachment_replace: true
-
 
 
       # Runs a single command using the runners shell
