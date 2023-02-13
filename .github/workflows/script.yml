@@ -60,12 +60,12 @@ jobs:
         id: vars
         shell: bash
         run: |
-            echo "author=$(git rev-parse --short HEAD)" >>$GITHUB_OUTPUT
+            echo "author=$(git log -1 --format='%an')" >>$GITHUB_OUTPUT
 #            echo "msg=$(git log -1 --pretty=%B')" >>$GITHUB_OUTPUT
 
       - name: Output
         run: |
-          echo "Author: ${{ steps.vars.outputs.author }}"
+          echo "Author Name: ${{ steps.vars.outputs.author }}"
 #          echo "Message: ${{ steps.vars.outputs.msg }}"
 
 #      - name: Upload & Replace Build Artifact
