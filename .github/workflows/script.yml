@@ -62,22 +62,13 @@ jobs:
         run: |
             echo "author=$(git log -1 --format='%an')" >>$GITHUB_OUTPUT
             echo "message=$(git log -1 --pretty=%B)" >>$GITHUB_OUTPUT
-        env:
-          AUTHOR_NAME: ${{ steps.vars.outputs.author }}
-          MESSAGE: ${{ steps.vars.outputs.message }}
+            echo "obj=${{ steps.vars.outputs.author }}: ${{ steps.vars.outputs.message }}" >>$GITHUB_OUTPUT
 
       - name: Output
         run: |
           echo "Author Name: ${{ steps.vars.outputs.author }}"
           echo "Commit Message: ${{ steps.vars.outputs.message }}"
-        env:
-          MY_WORKFLOW_VAR: ${{ steps.vars.outputs.author }}
-
-
-      - name: Set env
-        run: echo ::set-env name=STEPVAR::${{ env.MY_WORKFLOW_VAR }}-somestep
-      - name: Test
-        run: echo $STEPVAR
+          echo "Commit Message: ${{ steps.vars.outputs.obj }}"
 
 #      - name: Upload & Replace Build Artifact
 #        uses: sazid/zeuz-actions-upload-attachment@v1.0
