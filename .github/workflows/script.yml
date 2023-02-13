@@ -60,11 +60,13 @@ jobs:
         id: vars
         shell: bash
         run: |
-            echo "::set-output name=sha_short::$(git rev-parse --short HEAD)"
+            echo "author=$(git rev-parse --short HEAD)" >>$GITHUB_OUTPUT
+#            echo "msg=$(git log -1 --pretty=%B')" >>$GITHUB_OUTPUT
 
       - name: Output
         run: |
-          echo "Sha: ${{ steps.vars.outputs.sha_short }}"
+          echo "Author: ${{ steps.vars.outputs.author }}"
+#          echo "Message: ${{ steps.vars.outputs.msg }}"
 
 #      - name: Upload & Replace Build Artifact
 #        uses: sazid/zeuz-actions-upload-attachment@v1.0
