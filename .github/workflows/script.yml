@@ -53,7 +53,7 @@ jobs:
           zeuz_server_host: ${{ secrets.ZEUZ_SERVER_HOST }}
           zeuz_api_key: ${{ secrets.X_API_KEY }}
           zeuz_attachment_type: ${{ vars.ZEUZ_ATTACHMENT_TYPE }}
-          zeuz_attachment_item_id: ${{ vars.ZEUZ_ATTACHMENT_ITEM_ID }}
+          zeuz_attachment_item_id: '${{ vars.ZEUZ_ATTACHMENT_ITEM_ID }}'
           zeuz_attachment_path: version.txt
           zeuz_attachment_replace: true
 
