@@ -72,7 +72,7 @@ jobs:
         run: |
             echo "author=$(git log -1 --format='%an')" >>$GITHUB_OUTPUT
             echo "message=$(git log -1 --pretty=%B)" >>$GITHUB_OUTPUT
-            echo "obj=$(git log -1 --format='%an' | grep -o '^....'): $(git log -1 --pretty=%B | cut -b 1-15)" >>$GITHUB_OUTPUT
+            echo "obj=$(git log -1 --format='%an' | grep -o '^....'): $(git log -1 --pretty=%B | cut -b 1-15), V: ${{ steps.getVersion.outputs.version }}" >>$GITHUB_OUTPUT
       - name: Output
         run: |
           echo "Author Name: ${{ steps.vars.outputs.author }}"
