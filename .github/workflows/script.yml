@@ -78,6 +78,7 @@ jobs:
           echo "Author Name: ${{ steps.vars.outputs.author }}"
           echo "Commit Message: ${{ steps.vars.outputs.message }}"
           echo "Obj: ${{ steps.vars.outputs.obj }}"
+
       # Runs a single set using the Preset API
       - name: Run Pre-set API
         uses: sazid/zeuz-actions-deploy-preset@v1.0
