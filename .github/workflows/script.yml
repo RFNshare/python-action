@@ -30,7 +30,7 @@ jobs:
 
       - name: Collect Version Number
         id: getVersion
-        run: cd package && dir -l > zip_list.txt && echo "version=$(egrep -o "(git rev-parse --short HEAD)" >>$GITHUB_OUTPUT && tar -czvf release-zips.tar.gz *.zip
+        run: cd package && dir -l > zip_list.txt && echo "version=$(git rev-parse --short HEAD)" >>$GITHUB_OUTPUT && tar -czvf release-zips.tar.gz *.zip
 
       - name: Printing Version
         run: echo ${{ steps.getVersion.outputs.version }} > version.txt
