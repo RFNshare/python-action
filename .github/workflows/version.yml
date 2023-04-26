@@ -31,7 +31,7 @@ jobs:
 
       - name: Collect Version Number
         id: getVersion
-        run: cd app && cat pubspec.yaml | grep -o 'version:[^:]*' | head -1
+        run: cd app && cat pubspec.yaml | grep -o 'version:[^:]*+$' | head -1
 
       - name: Collecting Commit Details
         id: vars
