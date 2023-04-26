@@ -21,14 +21,13 @@ jobs:
     steps:
       - name: Checkout Github workspace
         uses: actions/checkout@v2
-      - name: Get version
-        id: read-version
-        uses: mikefarah/yq@master
-        with:
-          cmd: yq -r '.version' '/home/runner/work/zeuz-github-action/zeuz-github-action/app/pubspec.yaml'
-
-      - name: Output flutter version
-        run: echo 'version_number:' ${{ steps.read-version.outputs.result }}
+#      - id: read-version
+#        uses: NiklasLehnfeld/flutter-version-number-action@main
+#        with:
+#          file-path: /home/runner/work/zeuz-github-action/zeuz-github-action/app/pubspec.yaml
+#
+#      - name: Output flutter version
+#        run: echo 'version_number:' ${{ steps.read-version.outputs.version-number }}
 
       - name: Collecting Commit Details
         id: vars
@@ -36,6 +35,7 @@ jobs:
         run: |
           echo "author=$(git log -1 --format='%an')" >>$GITHUB_OUTPUT
           echo "obj=$(git log -1 --format='%an'): version_number: ${{ steps.read-version.outputs.version-number }}" >>$GITHUB_OUTPUT
+          echo "version=$(cat /home/runner/work/zeuz-github-action/zeuz-github-action/app/pubspec.yaml | grep -o 'version:[^:]*')" >>$GITHUB_OUTPUT
 
  
 
