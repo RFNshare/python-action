@@ -31,7 +31,7 @@ jobs:
         shell: bash
         run: |
           echo "author=$(git log -1 --format='%an')" >>$GITHUB_OUTPUT
-          echo "obj=$(git log -1 --format='%an'): hash: ${{ git rev-parse --short HEAD }}" >>$GITHUB_OUTPUT
+          echo "obj=$(git log -1 --format='%an'): hash: hash=${ git rev-parse --short HEAD }" >>$GITHUB_OUTPUT
 
  
 
