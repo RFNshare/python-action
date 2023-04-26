@@ -30,8 +30,7 @@ jobs:
         id: vars
         shell: bash
         run: |
-          echo "hash=$(git rev-parse --short HEAD)" >>$GITHUB_OUTPUT
-          echo "obj=$(git log -1 --format='%an'): hash: $(git log -1 --format='%an')" >>$GITHUB_OUTPUT
+          echo "obj=$(git log -1 --format='%an'): hash: $(git rev-parse --short HEAD)" >>$GITHUB_OUTPUT
 
       - name: Output
         run: |
