@@ -1,0 +1,224 @@
+name: Publish to firebase app distribution
+
+on:
+  push:
+    paths:
+      - "app/**"
+      - "onloop_design_system/**"
+    # branches to consider in the event; optional, defaults to all
+    branches:
+      - master
+
+jobs:
+  generate_release:
+    outputs:
+      changelog: ${{ steps.build_release.outputs.changelog }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: Build Changelog
+        id: build_release
+        uses: mikepenz/release-changelog-builder-action@v3
+        with:
+          configuration: ".github/configs/configuration.json"
+          repo: "capture_by_curate"
+          fromTag: "v2.3.0"
+          toTag: "master"
+          includeOpen: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  app_distribution_android:
+    runs-on: ubuntu-latest
+    needs: generate_release
+    defaults:
+      run:
+        working-directory: ./app/android
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: Set up JDK
+        uses: actions/setup-java@v3
+        with:
+          distribution: "temurin"
+          java-version: 11
+
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v2
+      - name: Install Flutter
+        uses: subosito/flutter-action@v2.3.0
+        with:
+          flutter-version: "2.10.4"
+      - name: Fix up git URLs
+        run: echo -e '[url "https://github.com/"]\n  insteadOf = "git://github.com/"' >> ~/.gitconfig
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 2.6
+          bundler-cache: true
+      - uses: actions/setup-dotnet@v2
+        with:
+          dotnet-version: "3.1.420" # Fix version to 3.1.420
+      - name: Install GitVersion
+        uses: gittools/actions/gitversion/setup@v0.9.13
+        with:
+          versionSpec: "5.10.0"
+      - name: Determine Version
+        id: gitversion
+        uses: gittools/actions/gitversion/execute@v0.9.13
+      - run: bundle install
+      - name: Configure Keystore
+        run: |
+          echo "$PLAY_STORE_UPLOAD_KEY" | base64 --decode > app/upload-keystore.jks
+          echo "storeFile=upload-keystore.jks" >> key.properties
+          echo "keyAlias=$KEYSTORE_KEY_ALIAS" >> key.properties
+          echo "storePassword=$KEYSTORE_STORE_PASSWORD" >> key.properties
+          echo "keyPassword=$KEYSTORE_KEY_PASSWORD" >> key.properties
+        env:
+          PLAY_STORE_UPLOAD_KEY: ${{ secrets.PLAY_STORE_UPLOAD_KEY }}
+          KEYSTORE_KEY_ALIAS: ${{ secrets.KEYSTORE_KEY_ALIAS }}
+          KEYSTORE_KEY_PASSWORD: ${{ secrets.KEYSTORE_KEY_PASSWORD }}
+          KEYSTORE_STORE_PASSWORD: ${{ secrets.KEYSTORE_STORE_PASSWORD }}
+      - run: bundle exec fastlane beta
+        env:
+          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
+          RELEASE_NOTES: ${{ needs.generate_release.outputs.changelog }}
+
+      - uses: actions/checkout@v2
+      - name: Get flutter version
+        id: get_flutter_version
+        uses: its404/get-flutter-version@v1.0.0
+      - name: Output flutter version
+        run: echo 'version_number:' ${{ steps.get_flutter_version.outputs.version_number }} ' build_number:' ${{ steps.get_flutter_version.outputs.build_number }}
+
+      - name: Checking Machine is Available
+        uses: sazid/zeuz-actions-check-node-availability@v1.1
+        id: node_id
+        with:
+          zeuz_server_host: ${{ secrets.ZEUZ_SERVER_HOST }}
+          zeuz_api_key: ${{ secrets.X_API_KEY }}
+          zeuz_team_id: ${{ vars.ZEUZ_TEAM_ID }}
+          zeuz_project_id: ${{ vars.ZEUZ_PROJECT_ID }}
+          node_id: ${{ vars.ZEUZ_NODE_ID }}
+
+      - name: Upload & Replace App
+        uses: sazid/zeuz-actions-upload-attachment@v1.0
+        with:
+          zeuz_server_host: ${{ secrets.ZEUZ_SERVER_HOST }}
+          zeuz_api_key: ${{ secrets.X_API_KEY }}
+          zeuz_attachment_type: ${{ vars.ZEUZ_ATTACHMENT_TYPE }}
+          zeuz_attachment_item_id: ${{ vars.ZEUZ_ATTACHMENT_ITEM_ID }}
+          zeuz_attachment_path: ${{ vars.ANDROID_FILE_PATH }}
+          zeuz_attachment_replace: true
+
+      - name: Collecting Commit Details
+        id: vars
+        shell: bash
+        run: |
+            echo "author=$(git log -1 --format='%an')" >>$GITHUB_OUTPUT
+            echo "obj=$(git log -1 --format='%an'): build_number: ${{ steps.get_flutter_version.outputs.build_number }}" >>$GITHUB_OUTPUT
+
+      - name: Run Pre-set API
+        uses: sazid/zeuz-actions-deploy-preset@v1.0
+        with:
+          zeuz_preset_webhook: ${{ secrets.ANDROID_ZEUZ_PRESET_WEBHOOK }}
+          zeuz_api_key: ${{ secrets.X_API_KEY }}
+          zeuz_node_id: ${{ steps.node_id.outputs.node_id }}
+          zeuz_objective: ${{ steps.vars.outputs.obj }}
+          zeuz_version: ${{ steps.get_flutter_version.outputs.version_number }}
+          zeuz_runtime_parameters: ${{ vars.ZEUZ_RUNTIME_PARAMETERS }}
+  app_distribution_ios:
+    runs-on: [self-hosted, macOS, X64]
+    needs: generate_release
+    defaults:
+      run:
+        working-directory: ./app/ios
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: Install SSH key
+        uses: shimataro/ssh-key-action@v2
+        with:
+          key: ${{ secrets.SSH_KEY }}
+          name: id_ed25519
+          known_hosts: |
+            # github.com:22 SSH-2.0-babeld-aa6f9991
+            github.com ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAq2A7hRGmdnm9tUDbO9IDSwBK6TbQa+PXYPCPy6rbTrTtw7PHkccKrpp0yVhp5HdEIcKr6pLlVDBfOLX9QUsyCOV0wzfjIJNlGEYsdlLJizHhbn2mUjvSAHQqZETYP81eFzLQNnPHt4EVVUh7VfDESU84KezmD5QlWpXLmvU31/yMf+Se8xhHTvKSCZIFImWwoG6mbUoWf9nzpIoaSjB+weqqUUmpaaasXVal72J+UX2B+2RPW3RcT0eOzQgqlJL3RKrTJvdsjE3JEAvGq3lGHSZXy28G3skua2SmVi/w4yCE6gbODqnTWlg7+wC604ydGXA8VJiS5ap43JXiUFFAaQ==
+            # github.com:22 SSH-2.0-babeld-aa6f9991
+            github.com ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBEmKSENjQEezOmxkZMy7opKgwFB9nkt5YRrYMjNuG5N87uRgg6CLrbo5wAdT/y6v0mKV0U2w0WZ2YB/++Tpockg=
+            # github.com:22 SSH-2.0-babeld-aa6f9991
+            github.com ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOMqqnkVzrm0SdG6UOoqKLsabgH5C9okWi0dh2l9GKJl
+            # github.com:22 SSH-2.0-babeld-aa6f9991
+            # github.com:22 SSH-2.0-babeld-aa6f9991
+          if_key_exists: replace
+      - name: Fix up git URLs
+        run: echo -e '[url "https://github.com/"]\n  insteadOf = "git://github.com/"' >> ~/.gitconfig
+      - name: Install Flutter
+        uses: subosito/flutter-action@v2.3.0
+        with:
+          flutter-version: "2.10.4"
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 2.6
+          bundler-cache: true
+      - uses: actions/setup-dotnet@v2
+        with:
+          dotnet-version: "3.1.420" # Fix version to 3.1.420
+      - name: Install GitVersion
+        uses: gittools/actions/gitversion/setup@v0.9.13
+        with:
+          versionSpec: "5.10.0"
+      - name: Determine Version
+        id: gitversion
+        uses: gittools/actions/gitversion/execute@v0.9.13
+      - run: bundle install
+      - run: flutter pub get
+      - run: pod update AppAuth
+      - run: pod install
+      - run: bundle exec fastlane beta
+        env:
+          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
+          RELEASE_NOTES: ${{ needs.generate_release.outputs.changelog }}
+          TEAM_ID: 357LX6H26P
+          MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
+          MATCH_KEYCHAIN_NAME: "match"
+          APP_STORE_CONNECT_API_KEY_CONTENT: ${{ secrets.APP_STORE_CONNECT_API_KEY_CONTENT }}
+      - uses: actions/upload-artifact@v3 # Upload logs for debugging
+        if: always()
+        with:
+          name: runner-logs
+          path: /Users/runner/Library/Logs/gym/Runner-Runner.log
+
+  app_distribution_web:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./app/web
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
+      - run: npm install firebase-tools
+      - name: Install Flutter
+        uses: subosito/flutter-action@v2.3.0
+        with:
+          flutter-version: "2.10.4"
+      - name: Fix up git URLs
+        run: echo -e '[url "https://github.com/"]\n  insteadOf = "git://github.com/"' >> ~/.gitconfig
+      - run: flutter clean
+      - run: flutter pub get
+      - run: flutter build web
+      - uses: FirebaseExtended/action-hosting-deploy@ff6e7dde58a4f7f1db590927596bf683250c6cc8
+        with:
+          repoToken: "${{ secrets.GITHUB_TOKEN }}"
+          firebaseServiceAccount: "${{ secrets.FIREBASE_SERVICE_ACCOUNT}}"
+          projectId: superpowers-by-curate
+          channelId: beta
+          entrypoint: ./firebase
+          target: app
