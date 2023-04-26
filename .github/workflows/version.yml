@@ -21,30 +21,20 @@ jobs:
     steps:
       - name: Checkout Github workspace
         uses: actions/checkout@v2
-      - name: Collecting Details
-        id: r
+      - id: read-version
+        uses: NiklasLehnfeld/flutter-version-number-action@main
+        with:
+          file-path: /home/runner/work/zeuz-github-action/zeuz-github-action/app/pubspec.yaml
+
+      - name: Output flutter version
+        run: echo 'version_number:' ${{ steps.read-version.outputs.version-number }}
+
+      - name: Collecting Commit Details
+        id: vars
         shell: bash
         run: |
-          echo "p=$(pwd)" >>$GITHUB_OUTPUT
-
-      - name: Output
-        run: echo 'version_number:' ${{ steps.r.outputs.p }}
-
-
-      - name: Collect Version Number
-        id: getVersion
-        run: cd app && ls
-
-#      - name: Output flutter version
-#        run: echo 'version_number:' ${{ steps.getVersion.outputs.version-number }}
-#
-#
-#      - name: Collecting Commit Details
-#        id: vars
-#        shell: bash
-#        run: |
-#          echo "author=$(git log -1 --format='%an')" >>$GITHUB_OUTPUT
-#          echo "obj=$(git log -1 --format='%an'): version_number: ${{ steps.read-version.outputs.version-number }}" >>$GITHUB_OUTPUT
+          echo "author=$(git log -1 --format='%an')" >>$GITHUB_OUTPUT
+          echo "obj=$(git log -1 --format='%an'): version_number: ${{ steps.read-version.outputs.version-number }}" >>$GITHUB_OUTPUT
 
  
 
