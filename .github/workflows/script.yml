@@ -1,91 +1,91 @@
-# This is a basic workflow to help you get started with Actions
-
-name: Test CI/CD
-
-# Controls when the workflow will run
-on:
-  push:
-    branches:
-      - 'main'
-  # Allows you to run this workflow manually from the Actions tab
-  workflow_dispatch:
-
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
-jobs:
-  # This workflow contains a single job called "build"
-  build:
-    # The type of runner that the job will run on
-    runs-on: ubuntu-latest
-    environment: release
-    # Steps represent a sequence of tasks that will be executed as part of the job
-    steps:
-      - name: Checkout Github workspace
-        uses: actions/checkout@v2
-
-      - name: Archive production artifacts
-        uses: actions/upload-artifact@v3
-        with:
-          name: release-zips
-          path: package/**.zip
-
-      - name: Collect Version Number
-        id: getVersion
-        run: cd package && dir -l > zip_list.txt && echo "version=$(git rev-parse --short HEAD)" >>$GITHUB_OUTPUT && tar -czvf release-zips.tar.gz *.zip
-
-      - name: Printing Version
-        run: echo ${{ steps.getVersion.outputs.version }} > version.txt
-
-      # Verify CI/CD node is online
-      - name: Checking Machine is Available
-        uses: sazid/zeuz-actions-check-node-availability@v1.1
-        id: node_id
-        with:
-          zeuz_server_host: ${{ secrets.ZEUZ_SERVER_HOST }}
-          zeuz_api_key: ${{ secrets.X_API_KEY }}
-          zeuz_team_id: ${{ vars.ZEUZ_TEAM_ID }}
-          zeuz_project_id: ${{ vars.ZEUZ_PROJECT_ID }}
-          node_id: ${{ vars.ZEUZ_NODE_ID }}
-
-      - name: Upload version number into ZeuZ
-        uses: sazid/zeuz-actions-upload-attachment@v1.0
-        with:
-          zeuz_server_host: ${{ secrets.ZEUZ_SERVER_HOST }}
-          zeuz_api_key: ${{ secrets.X_API_KEY }}
-          zeuz_attachment_type: ${{ vars.ZEUZ_ATTACHMENT_TYPE }}
-          zeuz_attachment_item_id: ${{ vars.ZEUZ_ATTACHMENT_ITEM_ID }}
-          zeuz_attachment_path: version.txt
-          zeuz_attachment_replace: true
-
-      - name: Upload & Replace Build Artifact
-        uses: sazid/zeuz-actions-upload-attachment@v1.0
-        with:
-          zeuz_server_host: ${{ secrets.ZEUZ_SERVER_HOST }}
-          zeuz_api_key: ${{ secrets.X_API_KEY }}
-          zeuz_attachment_type: ${{ vars.ZEUZ_ATTACHMENT_TYPE }}
-          zeuz_attachment_item_id: ${{ vars.ZEUZ_ATTACHMENT_ITEM_ID }}
-          zeuz_attachment_path: package/release-zips.tar.gz
-          zeuz_attachment_replace: true
-
-      - name: Collecting Commit Details
-        id: vars
-        shell: bash
-        run: |
-            echo "author=$(git log -1 --format='%an')" >>$GITHUB_OUTPUT
-            echo "message=$(git log -1 --pretty=%B)" >>$GITHUB_OUTPUT
-            echo "obj=$(git log -1 --format='%an' | grep -o '^....'): $(git log -1 --pretty=%B | cut -b 1-15), V: ${{ steps.getVersion.outputs.version }}" >>$GITHUB_OUTPUT
-      - name: Output
-        run: |
-          echo "Author Name: ${{ steps.vars.outputs.author }}"
-          echo "Commit Message: ${{ steps.vars.outputs.message }}"
-          echo "Obj: ${{ steps.vars.outputs.obj }}"
-
-      # Runs a single set using the Preset API
-      - name: Run Pre-set API
-        uses: sazid/zeuz-actions-deploy-preset@v1.0
-        with:
-          zeuz_preset_webhook: ${{ secrets.ZEUZ_PRESET_WEBHOOK }}
-          zeuz_api_key: ${{ secrets.X_API_KEY }}
-          zeuz_node_id: ${{ steps.node_id.outputs.node_id }}
-          zeuz_objective: ${{ steps.vars.outputs.obj }}
-          zeuz_version: ${{ steps.getVersion.outputs.version }}
-          zeuz_runtime_parameters: ${{ vars.ZEUZ_RUNTIME_PARAMETERS }}
+## This is a basic workflow to help you get started with Actions
+#
+#name: Test CI/CD
+#
+## Controls when the workflow will run
+#on:
+#  push:
+#    branches:
+#      - 'main'
+#  # Allows you to run this workflow manually from the Actions tab
+#  workflow_dispatch:
+#
+## A workflow run is made up of one or more jobs that can run sequentially or in parallel
+#jobs:
+#  # This workflow contains a single job called "build"
+#  build:
+#    # The type of runner that the job will run on
+#    runs-on: ubuntu-latest
+#    environment: release
+#    # Steps represent a sequence of tasks that will be executed as part of the job
+#    steps:
+#      - name: Checkout Github workspace
+#        uses: actions/checkout@v2
+#
+#      - name: Archive production artifacts
+#        uses: actions/upload-artifact@v3
+#        with:
+#          name: release-zips
+#          path: package/**.zip
+#
+#      - name: Collect Version Number
+#        id: getVersion
+#        run: cd package && dir -l > zip_list.txt && echo "version=$(git rev-parse --short HEAD)" >>$GITHUB_OUTPUT && tar -czvf release-zips.tar.gz *.zip
+#
+#      - name: Printing Version
+#        run: echo ${{ steps.getVersion.outputs.version }} > version.txt
+#
+#      # Verify CI/CD node is online
+#      - name: Checking Machine is Available
+#        uses: sazid/zeuz-actions-check-node-availability@v1.1
+#        id: node_id
+#        with:
+#          zeuz_server_host: ${{ secrets.ZEUZ_SERVER_HOST }}
+#          zeuz_api_key: ${{ secrets.X_API_KEY }}
+#          zeuz_team_id: ${{ vars.ZEUZ_TEAM_ID }}
+#          zeuz_project_id: ${{ vars.ZEUZ_PROJECT_ID }}
+#          node_id: ${{ vars.ZEUZ_NODE_ID }}
+#
+#      - name: Upload version number into ZeuZ
+#        uses: sazid/zeuz-actions-upload-attachment@v1.0
+#        with:
+#          zeuz_server_host: ${{ secrets.ZEUZ_SERVER_HOST }}
+#          zeuz_api_key: ${{ secrets.X_API_KEY }}
+#          zeuz_attachment_type: ${{ vars.ZEUZ_ATTACHMENT_TYPE }}
+#          zeuz_attachment_item_id: ${{ vars.ZEUZ_ATTACHMENT_ITEM_ID }}
+#          zeuz_attachment_path: version.txt
+#          zeuz_attachment_replace: true
+#
+#      - name: Upload & Replace Build Artifact
+#        uses: sazid/zeuz-actions-upload-attachment@v1.0
+#        with:
+#          zeuz_server_host: ${{ secrets.ZEUZ_SERVER_HOST }}
+#          zeuz_api_key: ${{ secrets.X_API_KEY }}
+#          zeuz_attachment_type: ${{ vars.ZEUZ_ATTACHMENT_TYPE }}
+#          zeuz_attachment_item_id: ${{ vars.ZEUZ_ATTACHMENT_ITEM_ID }}
+#          zeuz_attachment_path: package/release-zips.tar.gz
+#          zeuz_attachment_replace: true
+#
+#      - name: Collecting Commit Details
+#        id: vars
+#        shell: bash
+#        run: |
+#            echo "author=$(git log -1 --format='%an')" >>$GITHUB_OUTPUT
+#            echo "message=$(git log -1 --pretty=%B)" >>$GITHUB_OUTPUT
+#            echo "obj=$(git log -1 --format='%an' | grep -o '^....'): $(git log -1 --pretty=%B | cut -b 1-15), V: ${{ steps.getVersion.outputs.version }}" >>$GITHUB_OUTPUT
+#      - name: Output
+#        run: |
+#          echo "Author Name: ${{ steps.vars.outputs.author }}"
+#          echo "Commit Message: ${{ steps.vars.outputs.message }}"
+#          echo "Obj: ${{ steps.vars.outputs.obj }}"
+#
+#      # Runs a single set using the Preset API
+#      - name: Run Pre-set API
+#        uses: sazid/zeuz-actions-deploy-preset@v1.0
+#        with:
+#          zeuz_preset_webhook: ${{ secrets.ZEUZ_PRESET_WEBHOOK }}
+#          zeuz_api_key: ${{ secrets.X_API_KEY }}
+#          zeuz_node_id: ${{ steps.node_id.outputs.node_id }}
+#          zeuz_objective: ${{ steps.vars.outputs.obj }}
+#          zeuz_version: ${{ steps.getVersion.outputs.version }}
+#          zeuz_runtime_parameters: ${{ vars.ZEUZ_RUNTIME_PARAMETERS }}

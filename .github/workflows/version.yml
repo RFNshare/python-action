@@ -23,28 +23,28 @@ jobs:
         id: r
         shell: bash
         run: |
+          cd app
           echo "p=$(pwd)" >>$GITHUB_OUTPUT
-          echo "q=$(ls)" >>$GITHUB_OUTPUT
 
       - name: Output
-        run: echo 'version_number:' ${{ steps.r.outputs.p }} ${{ steps.r.outputs.q }}
+        run: echo 'version_number:' ${{ steps.r.outputs.p }}
 
-
-      - id: read-version
-        uses: NiklasLehnfeld/flutter-version-number-action@main
-        with:
-          file-path: app/pubspec.yaml
-
-      - name: Output flutter version
-        run: echo 'version_number:' ${{ steps.read-version.outputs.version-number }}
-
-
-      - name: Collecting Commit Details
-        id: vars
-        shell: bash
-        run: |
-          echo "author=$(git log -1 --format='%an')" >>$GITHUB_OUTPUT
-          echo "obj=$(git log -1 --format='%an'): version_number: ${{ steps.read-version.outputs.version-number }}" >>$GITHUB_OUTPUT
+#
+#      - id: read-version
+#        uses: NiklasLehnfeld/flutter-version-number-action@main
+#        with:
+#          file-path: app/pubspec.yaml
+#
+#      - name: Output flutter version
+#        run: echo 'version_number:' ${{ steps.read-version.outputs.version-number }}
+#
+#
+#      - name: Collecting Commit Details
+#        id: vars
+#        shell: bash
+#        run: |
+#          echo "author=$(git log -1 --format='%an')" >>$GITHUB_OUTPUT
+#          echo "obj=$(git log -1 --format='%an'): version_number: ${{ steps.read-version.outputs.version-number }}" >>$GITHUB_OUTPUT
 
  
 
