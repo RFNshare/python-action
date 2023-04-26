@@ -35,7 +35,8 @@ jobs:
         run: |
           echo "author=$(git log -1 --format='%an')" >>$GITHUB_OUTPUT
           echo "obj=$(git log -1 --format='%an'): version_number: ${{ steps.read-version.outputs.version-number }}" >>$GITHUB_OUTPUT
-          echo "version=$(cat /home/runner/work/zeuz-github-action/zeuz-github-action/app/pubspec.yaml | grep -o 'version:[^:]*')" >>$GITHUB_OUTPUT
+          cd app
+          echo "version=$(cat pubspec.yaml | grep -o 'version:[^:]*')" >>$GITHUB_OUTPUT
 
  
 
