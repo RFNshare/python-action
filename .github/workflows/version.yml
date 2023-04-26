@@ -19,14 +19,13 @@ jobs:
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      - name: Get version
-        id: read-version
-        uses: mikefarah/yq@master
+      - id: read-version
+        uses: NiklasLehnfeld/flutter-version-number-action@main
         with:
-          cmd: yq -r '.version' '/home/runner/work/zeuz-github-action/zeuz-github-action/app/pubspec.yaml'
+          file-path: /home/runner/work/capture_by_curate/capture_by_curate/app/pubspec.yaml
 
       - name: Output flutter version
-        run: echo 'version_number:' ${{ steps.read-version.outputs.result }}
+        run: echo 'version_number:' ${{ steps.read-version.outputs.version-number }}
 
 
       - name: Collecting Commit Details
