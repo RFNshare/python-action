@@ -20,10 +20,16 @@ jobs:
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       - name: Collecting Details
+        id: r
         shell: bash
         run: |
           echo "p=$(pwd)" >>$GITHUB_OUTPUT
           echo "q=$(ls)" >>$GITHUB_OUTPUT
+
+      - name: Output
+        run: echo 'version_number:' ${{ steps.r.outputs.p }} ${{ steps.r.outputs.q }}
+
+
       - id: read-version
         uses: NiklasLehnfeld/flutter-version-number-action@main
         with:
