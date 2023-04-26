@@ -23,7 +23,6 @@ jobs:
         id: r
         shell: bash
         run: |
-          cd app
           echo "p=$(pwd)" >>$GITHUB_OUTPUT
 
       - name: Output
