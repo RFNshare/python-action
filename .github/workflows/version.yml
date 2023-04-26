@@ -24,7 +24,7 @@ jobs:
 
       - name: Collect Version Number
         id: getVersion
-        run: cd app && echo "version=$(cat pubspec.yaml | grep -o 'version:[^:+$]*' | head -1) | cut -f2 -d':'" >>$GITHUB_OUTPUT
+        run: cd app && echo "version=$(cat pubspec.yaml | grep -o 'version:[^:+$]*' | head -1 | cut -f2 -d":")" >>$GITHUB_OUTPUT
 
       - name: Collecting Commit Details
         id: vars
